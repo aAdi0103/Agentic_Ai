@@ -1,0 +1,40 @@
+# What is LangGraph?
+LangGraph is a open-source framework which is build on top of langChain for developing stateful and multistep AI applications. It models a application as a graph of nodes and edges where each node represent a task and edge defines the execution flow.
+---------------------------------------------------------------------------------------------------
+
+# Why LangGraph Matters:
+1. Control Flow Complexity: Unlike chains, LangGraph naturally supports cycles, conditional branching, and jumps, allowing developers to build complex, multi-step automation without messy glue code.
+
+2. State Management: It keeps track of the system state throughout the execution, which is crucial for handling long-running or multi-step processes.
+
+3. Fault Tolerance: With built-in checkpointers, LangGraph can track progress at every node. If a system crashes, it can resume exactly where it left off, rather than restarting from the beginning.
+
+4. Human-in-the-Loop: It allows the workflow to pause indefinitely to wait for human approval or input, making it ideal for high-stakes or long-duration tasks.
+
+5. Nested Workflows (Subgraphs): You can embed entire graphs within other nodes. This enables modular reusability and the creation of **multi-agent systems where different agents collaborate on complex problems.
+
+6. Observability: Through tight integration with LangSmith, it provides a complete chronological timeline of state changes and events, making debugging and auditing significantly easier than in standard LangChain setups.
+-----------------------------------------------------------------------------------------------------
+
+
+# What is a State?
+State is the data that is passed between nodes in the graph. Each nodes can read and write to the state and returns the updated state to the next node in the graph.
+*IMP -> Once a workflow executed and reached the END state then the values stored in state is erased and can't be accessed later. Concept of 'Persistence' allow us to eleminate this flaw. Becausw of this flaw a chatbot is not able to store the previous conversations.
+
+
+# what is Reducers? 
+Reducers are the rules that tells a node how to udate the satate. Each key in the state can have their own reducer which defines wheather new data replace, merge or adds to the existing value. 
+For example if we have a Message[] key in state and 2 nodes updates that message then if we don't have a reducer then it's impossible to decide which to keep and rasies an error but with a 'add' reducers we can append both the messages. 
+
+
+# Persistance
+Persistance in LangGrapg is a concept that allow us to save(in database) and restore the satate of a Workflow over time. It not only allow used to store final values but also the intermidiate values at each node.
+-> It can be stored outside the program memory like SQLite or Redis not only in RAM.
+-> Fault Tolerance is another feature that Persistance provide means if in some scenarios in intermidiate state server fails or any mishappening occurs then we does't necessarly needs to restart the workflow we can resume from where it fails.
+-> It also allow us to implement the feature to resume chat in chat bot.
+-> Persistance allow Human in the loop by pausing the grpah for hours or days
+
+
+## Checkpoints in Persistance -> These are basically a snapshot of a the graph at a particular point during the execution of a workflow
+## Checkpointers in Persistance -> The component that saves and loads those snapshots.
+## Threads -> It is a unique identifier that represents one execution or conversation of a graph.
